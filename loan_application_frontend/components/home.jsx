@@ -3,21 +3,21 @@ import React from 'react'
 const home = () => {
   return (
     <>
-     <div className=" w-full flex justify-center items-center h-[600px]   relative">
-      <img src="https://plus.unsplash.com/premium_photo-1661775362620-fc541ec56625?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="" className='h-[80vh] w-[75vw] object-cover object-center  rounded-2xl ' />
-      
-      <div className='absolute h-[80vh] w-[75vw] bg-gradient-to-b from-black/30 via-black/40 to-black/60 rounded-2xl'></div>
-      
-      <div className='absolute flex flex-col items-center text-center z-10'>
-        <h1 className='text-5xl font-bold text-white max-w-[700px] leading-[1.3]'>Predict Your Loan Approval with Precision</h1>
-        <h2 className='text-gray-50 text-base py-5  max-w-[700px]'>Our advanced machine learning model analyzes your financial data to provide accurate loan approval predictions, helping you make informed decisions.</h2>
-        <button className='bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-300 cursor-pointer active:scale-90 text-lg relative top-8 '>Get a Loan Prediction</button>
+     <div className="w-full flex justify-center items-center h-[400px] sm:h-[500px] lg:h-[600px] relative px-4   ">
+      <img src="https://plus.unsplash.com/premium_photo-1661775362620-fc541ec56625?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="" className='h-[300px] sm:h-[400px] lg:h-[80vh]  w-[80vw]  lg:w-[75vw]  object-cover object-center rounded-xl sm:rounded-2xl' />
+
+      <div className='absolute h-[300px] py-5 sm:h-[500px] lg:h-[80vh] w-[80vw] lg:w-[75vw] bg-gradient-to-b from-black/30 via-black/40 to-black/60 rounded-xl sm:rounded-2xl'></div>
+
+      <div className='absolute flex flex-col items-center text-center z-10 px-4'>
+        <h1 className='text-2xl sm:text-4xl lg:text-5xl font-bold text-white max-w-[300px] sm:max-w-[500px] lg:max-w-[700px] leading-tight sm:leading-[1.3]'>Predict Your Loan Approval with Precision</h1>
+        <h2 className='hidden sm:block text-gray-50 text-sm sm:text-base py-3 sm:py-5 max-w-[280px] sm:max-w-[500px] lg:max-w-[700px]'>Our advanced machine learning model analyzes your financial data to provide accurate loan approval predictions, helping you make informed decisions.</h2>
+        <button className='bg-blue-500 text-white px-3 py-2 sm:px-4 sm:py-2 rounded-lg hover:bg-blue-600 transition duration-300 cursor-pointer active:scale-90 text-sm sm:text-lg relative top-4 sm:top-8'>Get a Loan Prediction</button>
       </div>
      </div>
   
-   <div className="flex flex-col gap-10 px-4 py-10 max-w-6xl mx-auto">
-  <div className="flex flex-col gap-4">
-    <h1 className="text-[#0e141b] tracking-light text-[32px] font-bold leading-tight @[480px]:text-4xl @[480px]:font-black @[480px]:leading-tight @[480px]:tracking-[-0.033em] max-w-[720px]">
+   <div className="flex flex-col gap-10 lg:px-2 px-10 lg:py-10 py-0 max-w-6xl mx-auto">
+  <div className="flex flex-col gap-5">
+    <h1 className="text-[#0e141b] tracking-light lg:text-[32px] text-2xl font-bold max-w-[720px]">
       Why Choose LoanPredict?
     </h1>
     <p className="text-[#0e141b] text-base font-normal leading-normal max-w-[720px]">
@@ -67,7 +67,7 @@ const home = () => {
 <div className='max-w-6xl mx-auto flex'>
   <div className="flex flex-col  gap-6  py-10 w-full justify-center items-center">
     <div className="flex flex-col gap-2 text-center">
-      <h1 className="text-[#0e141b] tracking-light text-[32px] font-bold leading-tight @[480px]:text-4xl @[480px]:font-black @[480px]:leading-tight @[480px]:tracking-[-0.033em] max-w-[720px]">
+      <h1 className="text-[#0e141b] tracking-light lg:text-[32px] text-2xl font-bold leading-tight  max-w-[720px]">
         Ready to See Your Loan Prediction?
       </h1>
     </div>
