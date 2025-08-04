@@ -86,7 +86,7 @@ const contact = () => {
             ></textarea>
           </label>
         </div>
-        <div className="flex px-4 py-3">
+        <div className="flex px-4  lg:pb-0 pb-8 ">
           <button onClick={(e) => {
             handleSubmit(e)
           }}
