@@ -3,6 +3,7 @@ import Home from '../components/home';
 import Contact from '../components/contact';
 import About from '../components/about';
 import Faq from '../components/faq';
+import  Working from '../components/working';
 import { Routes, Route, Link } from 'react-router-dom';
 const App = () => {
   return (
@@ -20,6 +21,9 @@ const App = () => {
           <Link className='hover:text-emerald-800 transition duration-300 hover:underline' to="/about">About</Link>
         </li>
         <li>
+          <Link className='hover:text-emerald-800 transition duration-300 hover:underline' to="/working">How it works</Link>
+        </li>
+        <li>
           <Link className='hover:text-emerald-800 transition duration-300 hover:underline' to="/faq">FAQs</Link>
         </li>
         <li>
@@ -35,9 +39,10 @@ const App = () => {
     
     <Routes>
         <Route path="/" element={<Home/>}/>
-        <Route path="/contact" element={<Contact/>}/>
         <Route path="/about" element={<About/>}/>
+        <Route path="/working" element={<Working/>}/>
         <Route path="/faq" element={<Faq/>}/>
+        <Route path="/contact" element={<Contact/>}/>
     </Routes>
 
    </>
