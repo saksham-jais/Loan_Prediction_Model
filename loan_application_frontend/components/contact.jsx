@@ -21,7 +21,7 @@ const contact = () => {
   };
 
   return (
-    <div className="lg:max-w-6xl sm:max-w-[350px] md:max-w-3xl mx-auto ">
+    <div className="lg:max-w-6xl sm:max-w-[350px] md:max-w-3xl mx-auto relative ">
       <h1 className="text-2xl px-3 font-semibold py-5 mt-5">Contact Us</h1>
 
       <h2 className=" px-3 grow">We're here to help. Reach out to us through any of the methods below, or fill out the form for a quick response.</h2>
@@ -86,7 +86,7 @@ const contact = () => {
             ></textarea>
           </label>
         </div>
-        <div className="flex px-4  lg:pb-0 pb-8 ">
+        <div className="flex px-4  lg:pb-5 pb-8 ">
           <button onClick={(e) => {
             handleSubmit(e)
           }}
@@ -97,6 +97,10 @@ const contact = () => {
           </button>
         </div>
       </form>
+
+
+        <img src="/contact.png" alt="contactimage" className="w-[40vw] h-[60vh] absolute top-[20vh] left-[35vw] hidden sm:block " />
+
     </div>
   )
 }
