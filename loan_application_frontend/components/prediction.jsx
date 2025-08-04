@@ -35,12 +35,12 @@ const Prediction = () => {
       return;
     }
     else alert('Loan prediction submitted!');
-    
+
   };
 
   return (
     <>
-      <div className="px-40 flex flex-1 justify-center py-5">
+      <div className="lg:px-40 flex flex-1 justify-center py-5">
         <div className="layout-content-container flex flex-col w-[512px]  py-5 max-w-[960px] flex-1">
           <h2 className="text-[#0e141b] tracking-light text-[28px] font-bold leading-tight px-4 text-center pb-3 pt-5">Loan Prediction Form</h2>
           <p className="text-[#0e141b] text-base font-normal leading-normal pb-3 pt-1 px-4 text-center">Please fill in the following details to get a loan prediction.</p>
