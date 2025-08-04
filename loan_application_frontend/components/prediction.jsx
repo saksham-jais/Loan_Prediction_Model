@@ -3,16 +3,18 @@ import React, { useState } from 'react';
 const Prediction = () => {
 
   const [formData, setFormData] = useState({
-    applicantIncome: '',
-    coapplicantIncome: '',
+    annualIncome: '',
+    loanDuration: '',
     loanAmount: '',
-    loanAmountTerm: '',
-    creditHistory: '',
+    age: '',
+    creditCardUtilization: '',
+    creditScore: '',
     gender: '',
     married: '',
-    dependents: '',
+    bankruptcyHistory: '',
+    previousLoanDefaults: '',
     education: '',
-    selfEmployed: '',
+    employmentStatus: '',
     propertyArea: ''
   });
 
@@ -30,7 +32,7 @@ const Prediction = () => {
     e.preventDefault();
     console.log('Form Data:', formData);
 
-    if(!formData.applicantIncome || !formData.loanAmount || !formData.loanAmountTerm) {
+    if(!formData.annualIncome || !formData.loanAmount || !formData.age || !formData.creditScore) {
       alert('Please fill in all required fields');
       return;
     }
@@ -48,13 +50,13 @@ const Prediction = () => {
           <form onSubmit={handleSubmit}>
             <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
               <label className="flex flex-col min-w-40 flex-1">
-                <p className="text-[#0e141b] text-base font-medium leading-normal pb-2">Applicant Income</p>
+                <p className="text-[#0e141b] text-base font-medium leading-normal pb-2">Annual Income</p>
                 <input
-                  name="applicantIncome"
+                  name="annualIncome"
                   type="number"
                   placeholder="Enter your annual income"
                   className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#0e141b] focus:outline-0 focus:ring-0 border border-[#d0dbe7] bg-slate-50 focus:border-[#d0dbe7] h-14 placeholder:text-[#4e7097] p-[15px] text-base font-normal leading-normal"
-                  value={formData.applicantIncome}
+                  value={formData.annualIncome}
                   onChange={handleInputChange}
                 />
               </label>
@@ -62,13 +64,13 @@ const Prediction = () => {
 
             <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
               <label className="flex flex-col min-w-40 flex-1">
-                <p className="text-[#0e141b] text-base font-medium leading-normal pb-2">Coapplicant Income</p>
+                <p className="text-[#0e141b] text-base font-medium leading-normal pb-2">Loan duration</p>
                 <input
-                  name="coapplicantIncome"
+                  name="loanDuration"
                   type="number"
-                  placeholder="Enter coapplicant's annual income"
+                  placeholder="Enter loan duration in months(ex: 12)"
                   className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#0e141b] focus:outline-0 focus:ring-0 border border-[#d0dbe7] bg-slate-50 focus:border-[#d0dbe7] h-14 placeholder:text-[#4e7097] p-[15px] text-base font-normal leading-normal"
-                  value={formData.coapplicantIncome}
+                  value={formData.loanDuration}
                   onChange={handleInputChange}
                 />
               </label>
@@ -90,13 +92,26 @@ const Prediction = () => {
 
             <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
               <label className="flex flex-col min-w-40 flex-1">
-                <p className="text-[#0e141b] text-base font-medium leading-normal pb-2">Loan Amount Term (in days)</p>
+                <p className="text-[#0e141b] text-base font-medium leading-normal pb-2">Age in years</p>
                 <input
-                  name="loanAmountTerm"
+                  name="age"
                   type="number"
-                  placeholder="Enter loan term in days"
+                  placeholder="Enter your age"
                   className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#0e141b] focus:outline-0 focus:ring-0 border border-[#d0dbe7] bg-slate-50 focus:border-[#d0dbe7] h-14 placeholder:text-[#4e7097] p-[15px] text-base font-normal leading-normal"
-                  value={formData.loanAmountTerm}
+                  value={formData.age}
+                  onChange={handleInputChange}
+                />
+              </label>
+            </div>
+            <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
+              <label className="flex flex-col min-w-40 flex-1">
+                <p className="text-[#0e141b] text-base font-medium leading-normal pb-2">Credit Card Utilization Rate</p>
+                <input
+                  name="creditCardUtilization"
+                  type="number"
+                  placeholder="Enter your credit card utilization rate"
+                  className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#0e141b] focus:outline-0 focus:ring-0 border border-[#d0dbe7] bg-slate-50 focus:border-[#d0dbe7] h-14 placeholder:text-[#4e7097] p-[15px] text-base font-normal leading-normal"
+                  value={formData.creditCardUtilization}
                   onChange={handleInputChange}
                 />
               </label>
@@ -104,16 +119,20 @@ const Prediction = () => {
 
             <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
               <label className="flex flex-col min-w-40 flex-1">
-                <p className="text-[#0e141b] text-base font-medium leading-normal pb-2">Credit History</p>
+                <p className="text-[#0e141b] text-base font-medium leading-normal pb-2">Credit Score</p>
                 <select
-                  name="creditHistory"
+                  name="creditScore"
                   className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#0e141b] focus:outline-0 focus:ring-0 border border-[#d0dbe7] bg-slate-50 focus:border-[#d0dbe7] h-14 bg-[image:--select-button-svg] placeholder:text-[#4e7097] p-[15px] text-base font-normal leading-normal"
-                  value={formData.creditHistory}
+                  value={formData.creditScore}
                   onChange={handleInputChange}
                 >
-                  <option value="">Select credit history</option>
-                  <option value="1">Good Credit History</option>
-                  <option value="0">No Credit History</option>
+                  <option value="">Select credit Score</option>
+                  <option value="1">700-900</option>
+                  <option value="2">600-700</option>
+                  <option value="3">500-600</option>
+                  <option value="4">400-500</option>
+                  <option value="5">200-400</option>
+                  <option value="6">100-200</option>
                 </select>
               </label>
             </div>
@@ -152,14 +171,32 @@ const Prediction = () => {
 
             <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
               <label className="flex flex-col min-w-40 flex-1">
-                <p className="text-[#0e141b] text-base font-medium leading-normal pb-2">Dependents</p>
+                <p className="text-[#0e141b] text-base font-medium leading-normal pb-2">Bankruptcy History</p>
                 <select
-                  name="dependents"
+                  name="bankruptcyHistory"
                   className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#0e141b] focus:outline-0 focus:ring-0 border border-[#d0dbe7] bg-slate-50 focus:border-[#d0dbe7] h-14 bg-[image:--select-button-svg] placeholder:text-[#4e7097] p-[15px] text-base font-normal leading-normal"
-                  value={formData.dependents}
+                  value={formData.bankruptcyHistory}
                   onChange={handleInputChange}
                 >
                   <option value="">Select number of dependents</option>
+                  <option value="0">0</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3+">3+</option>
+                </select>
+              </label>
+            </div>
+
+            <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
+              <label className="flex flex-col min-w-40 flex-1">
+                <p className="text-[#0e141b] text-base font-medium leading-normal pb-2">Previous Loan Defaults</p>
+                <select
+                  name="previousLoanDefaults"
+                  className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#0e141b] focus:outline-0 focus:ring-0 border border-[#d0dbe7] bg-slate-50 focus:border-[#d0dbe7] h-14 bg-[image:--select-button-svg] placeholder:text-[#4e7097] p-[15px] text-base font-normal leading-normal"
+                  value={formData.previousLoanDefaults}
+                  onChange={handleInputChange}
+                >
+                  <option value="">Select no of previous loan defaults</option>
                   <option value="0">0</option>
                   <option value="1">1</option>
                   <option value="2">2</option>
@@ -179,23 +216,26 @@ const Prediction = () => {
                 >
                   <option value="">Select education level</option>
                   <option value="Graduate">Graduate</option>
-                  <option value="Not Graduate">Not Graduate</option>
+                  <option value="Associate">Associate</option>
+                  <option value="Master">Master</option>
+                  <option value="Bachelor">Bachelor</option>
+                  <option value="High School">High School</option>
                 </select>
               </label>
             </div>
 
             <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
               <label className="flex flex-col min-w-40 flex-1">
-                <p className="text-[#0e141b] text-base font-medium leading-normal pb-2">Self Employed</p>
+                <p className="text-[#0e141b] text-base font-medium leading-normal pb-2">Employment Status</p>
                 <select
-                  name="selfEmployed"
+                  name="employmentStatus"
                   className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#0e141b] focus:outline-0 focus:ring-0 border border-[#d0dbe7] bg-slate-50 focus:border-[#d0dbe7] h-14 bg-[image:--select-button-svg] placeholder:text-[#4e7097] p-[15px] text-base font-normal leading-normal"
-                  value={formData.selfEmployed}
+                  value={formData.employmentStatus}
                   onChange={handleInputChange}
                 >
                   <option value="">Select employment status</option>
                   <option value="Yes">Self Employed</option>
-                  <option value="No">Not Self Employed</option>
+                  <option value="No">Employed</option>
                 </select>
               </label>
             </div>
@@ -222,7 +262,7 @@ const Prediction = () => {
                 type="submit"
                 className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-[#1978e5] text-slate-50 text-sm font-bold leading-normal tracking-[0.015em]"
               >
-                <span className="truncate">Predict Loan</span>
+                <span>Predict Loan</span>
               </button>
             </div>
           </form>
