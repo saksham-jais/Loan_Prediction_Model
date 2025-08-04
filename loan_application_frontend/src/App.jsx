@@ -5,6 +5,7 @@ import About from '../components/about';
 import Faq from '../components/faq';
 import  Prediction from '../components/prediction';
 import { Routes, Route, Link } from 'react-router-dom';
+
 const App = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
