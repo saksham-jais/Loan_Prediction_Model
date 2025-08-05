@@ -39,10 +39,11 @@ const App = () => {
           <Link className='hidden sm:block hover:text-emerald-800 transition duration-300 hover:underline' to="/contact">Contact</Link>
         </li>
       </ul>
-
-      <button className="hidden sm:block bg-blue-500 text-white px-2 py-1 sm:px-4 sm:py-2 h-8 sm:h-10  min-w-[100px] text-base rounded-[6px] sm:rounded-[8px] hover:bg-blue-600 active:scale-90 transition-all duration-300 cursor-pointer">
-        Get started
-      </button>
+        <Link className="" to="/prediction">
+          <button className="hidden sm:block bg-blue-500 text-white px-2 py-1 sm:px-4 sm:py-2 h-8 sm:h-10  min-w-[100px] text-base rounded-[6px] sm:rounded-[8px] hover:bg-blue-600 active:scale-90 transition-all duration-300 cursor-pointer">
+            Get started
+          </button>
+        </Link>
 
       <svg 
         onClick={toggleMobileMenu}
@@ -115,9 +116,13 @@ const App = () => {
             </Link>
           </li>
           <li className="px-5 py-3">
-            <button className="w-full bg-blue-500 text-white px-4 py-2 rounded-[6px] hover:bg-blue-600 active:scale-95 transition-all duration-300">
-              Get started
-            </button>
+            <Link to="/prediction">
+              <button className="w-full bg-blue-500 text-white px-4 py-2 rounded-[6px] hover:bg-blue-600 active:scale-95 transition-all duration-300"
+             onClick={()=> setIsMobileMenuOpen(false)}
+              >
+                Get started
+              </button>
+            </Link>
           </li>
         </ul>
       </div>

@@ -99,7 +99,7 @@ const contact = () => {
       </form>
 
 
-        <img src="/contact.png" alt="contactimage" className="w-[40vw] h-[60vh] absolute top-[20vh] left-[35vw] hidden sm:block " />
+        <img src="/contact.png" alt="contactimage" className="w-[45vw] h-[62vh] absolute top-[16vh] left-[35vw] hidden sm:block " />
 
     </div>
   )
