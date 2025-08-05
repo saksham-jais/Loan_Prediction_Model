@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Home from '../components/home';
 import Contact from '../components/contact';
-import About from '../components/about';
+import Working from '../components/HowItWorks';
 import Faq from '../components/faq';
 import  Prediction from '../components/prediction';
 import { Routes, Route, Link } from 'react-router-dom';
@@ -27,7 +27,7 @@ const App = () => {
           <Link className='hover:text-emerald-800 transition duration-300 hover:underline hidden sm:block'  to="/">Home</Link>
         </li>
         <li>
-          <Link className='hidden sm:block hover:text-emerald-800 transition duration-300 hover:underline' to="/about">About</Link>
+          <Link className='hidden sm:block hover:text-emerald-800 transition duration-300 hover:underline' to="/working">How It Works</Link>
         </li>
         <li>
           <Link className='hidden sm:block hover:text-emerald-800 transition duration-300 hover:underline' to="/prediction">Prediction</Link>
@@ -82,10 +82,10 @@ const App = () => {
           <li>
             <Link 
               className="flex px-5 py-3 text-black font-semibold hover:bg-emerald-100 hover:text-emerald-800 transition-colors" 
-              to="/about"
+              to="/working"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              About
+              How It Works
             </Link>
           </li>
           <li>
@@ -131,7 +131,7 @@ const App = () => {
     
     <Routes>
         <Route path="/" element={<Home/>}/>
-        <Route path="/about" element={<About/>}/>
+        <Route path="/working" element={<Working/>}/>
         <Route path="/prediction" element={<Prediction/>}/>
         <Route path="/faq" element={<Faq/>}/>
         <Route path="/contact" element={<Contact/>}/>
