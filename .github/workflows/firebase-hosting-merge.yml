@@ -35,5 +35,4 @@ jobs:
           projectId: loan-prediction-ml-model
         env:
           FIREBASE_CLI_PREVIEWS: hostingchannels
-        working-directory: loan_application_frontend
-
+          working-directory: loan_application_frontend

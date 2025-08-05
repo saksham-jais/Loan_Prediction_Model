@@ -1,6 +1,7 @@
 {
   "projects": {
-    "Loan_Model": "loan-prediction-ml-model"
+    "Loan_Model": "loan-prediction-ml-model",
+    "default": "loan-prediction-ml-model"
   },
   "targets": {},
   "etags": {}
