@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const Prediction = () => {
 
@@ -31,6 +32,7 @@ const Prediction = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Form Data:', formData);
+    
 
     if(!formData.annualIncome || !formData.loanAmount || !formData.age || !formData.creditScore) {
       alert('Please fill in all required fields');
@@ -258,11 +260,14 @@ const Prediction = () => {
             </div>
 
             <div className="flex px-4 py-3 justify-center">
-              <button
+              <button onClick={(e)=>{
+                handleSubmit(e)
+              }}
                 type="submit"
                 className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-[#1978e5] text-slate-50 text-sm font-bold leading-normal tracking-[0.015em]"
               >
-                <span>Predict Loan</span>
+               <span>Predict Loan</span>
+
               </button>
             </div>
           </form>
