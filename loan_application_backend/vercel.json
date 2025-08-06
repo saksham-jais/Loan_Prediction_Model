@@ -1,5 +1,6 @@
 {
-"version": 2,
-"builds": [{ "src": "loan_application_backend/server.js", "use": "@vercel/node" }],
-"routes": [{ "src": "/(.*)", "dest": "api/index.js" }]
-}
+    "version": 2,
+    "builds": [{ "src": "loan_application_backend/server.js", "use": "@vercel/node" }],
+    "routes": [{ "src": "/(.*)", "dest": "loan_application_backend/server.js" }]
+  }
+  
