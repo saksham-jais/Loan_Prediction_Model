@@ -3,7 +3,9 @@ import Home from '../components/home';
 import Contact from '../components/contact';
 import Working from '../components/HowItWorks';
 import Faq from '../components/faq';
+import Result from '../components/result';
 import Prediction from '../components/prediction';
+import AuthLogin from '../components/AuthLogin';
 import { Routes, Route, Link } from 'react-router-dom';
 
 const App = () => {
@@ -31,9 +33,9 @@ const App = () => {
           <li>
             <Link className='hidden sm:block hover:text-emerald-800 transition duration-300 hover:underline' to="/working">How It Works</Link>
           </li>
-          <li>
+          {/* <li>
             <Link className='hidden sm:block hover:text-emerald-800 transition duration-300 hover:underline' to="/prediction">Prediction</Link>
-          </li>
+          </li> */}
           <li>
             <Link className='hidden sm:block hover:text-emerald-800 transition duration-300 hover:underline' to="/faq">FAQs</Link>
           </li>
@@ -41,9 +43,9 @@ const App = () => {
             <Link className='hidden sm:block hover:text-emerald-800 transition duration-300 hover:underline' to="/contact">Contact</Link>
           </li>
         </ul>
-        <Link className="" to="/prediction">
-          <button className="hidden sm:block bg-blue-500 text-white px-2 py-1 sm:px-4 sm:py-2 h-8 sm:h-10  min-w-[100px] text-base rounded-[6px] sm:rounded-[8px] hover:bg-blue-600 active:scale-90 transition-all duration-300 cursor-pointer">
-            Get started
+        <Link className="" to="/AuthLogin">
+          <button className="hidden sm:block bg-emerald-500  text-white px-2 py-1 sm:px-4 sm:py-2 h-8 sm:h-10  min-w-[100px] text-base rounded-[6px] sm:rounded-[8px] hover:bg-emerald-600 active:scale-90 transition-all duration-300 cursor-pointer">
+              Login
           </button>
         </Link>
 
@@ -89,7 +91,7 @@ const App = () => {
                 How It Works
               </Link>
             </li>
-            <li>
+            {/* <li>
               <Link
                 className="flex px-5 py-3 text-black font-semibold hover:bg-emerald-100 hover:text-emerald-800 transition-colors"
                 to="/prediction"
@@ -97,7 +99,7 @@ const App = () => {
               >
                 Prediction
               </Link>
-            </li>
+            </li> */}
             <li>
               <Link
                 className="flex px-5 py-3 text-black font-semibold hover:bg-emerald-100 hover:text-emerald-800 transition-colors"
@@ -117,11 +119,11 @@ const App = () => {
               </Link>
             </li>
             <li className="px-5 py-3">
-              <Link to="/prediction">
-                <button className="w-full bg-blue-500 text-white px-4 py-2 rounded-[6px] hover:bg-blue-600 active:scale-95 transition-all duration-300"
+              <Link to="/AuthLogin">
+                <button className="w-full bg-emerald-500 text-white px-4 py-2 rounded-[6px] hover:bg-emerald-600 active:scale-95 transition-all duration-300"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  Get started
+                  Login
                 </button>
               </Link>
             </li>
@@ -136,6 +138,8 @@ const App = () => {
         <Route path="/prediction" element={<Prediction />} />
         <Route path="/faq" element={<Faq />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/result" element={<Result />} />
+        <Route path="/AuthLogin" element={<AuthLogin />} />
 
       </Routes>
 

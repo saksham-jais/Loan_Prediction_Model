@@ -14,7 +14,7 @@ const home = () => {
         <h1 className='text-2xl sm:text-4xl lg:text-5xl font-bold text-white max-w-[300px] sm:max-w-[500px] lg:max-w-[700px] leading-tight sm:leading-[1.3]'>Predict Your Loan Approval with Precision</h1>
         <h2 className='hidden sm:block text-gray-50 text-sm sm:text-base py-3 sm:py-5 max-w-[280px] sm:max-w-[500px] lg:max-w-[700px]'>Our advanced machine learning model analyzes your financial data to provide accurate loan approval predictions, helping you make informed decisions.</h2>
       <Link to="/prediction">
-        <button className='bg-blue-500 text-white px-3 py-2 sm:px-4 sm:py-2 rounded-lg hover:bg-blue-600 transition duration-300 cursor-pointer active:scale-90 text-sm sm:text-lg relative top-4 sm:top-8'>Get a Loan Prediction</button>
+        <button className='bg-emerald-600 text-white px-3 py-2 sm:px-4 sm:py-2 rounded-lg hover:bg-emerald-600 transition duration-300 cursor-pointer active:scale-90 text-sm sm:text-lg relative top-4 sm:top-8'>Submit Application</button>
       </Link>
       </div>
      </div>
@@ -78,7 +78,7 @@ const home = () => {
     <div className="flex flex-1 justify-center">
       <div className="flex justify-center">
         <Link to="/prediction">
-        <button className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4  bg-[#1978e5] text-slate-50 text-base active:scale-90 duration-300 font-semibold  leading-normal grow">
+        <button className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4  bg-emerald-500 text-slate-50 text-base active:scale-90 duration-300 font-semibold  leading-normal grow">
           <span className=" ">Get Started Now</span>
         </button>
         </Link>

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-
+import { useNavigate } from 'react-router-dom';
 const Prediction = () => {
+
+   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     annualIncome: '',
@@ -19,7 +20,7 @@ const Prediction = () => {
     propertyArea: ''
   });
 
-  // Handle input changes
+  // Handle input and input area changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -28,7 +29,7 @@ const Prediction = () => {
     }));
   };
 
-  // Handle form submission
+  // Handle button for form submission
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Form Data:', formData);
@@ -36,9 +37,29 @@ const Prediction = () => {
 
     if(!formData.annualIncome || !formData.loanAmount || !formData.age || !formData.creditScore) {
       alert('Please fill in all required fields');
+     
       return;
     }
-    else alert('Loan prediction submitted!');
+    else{
+      alert('Loan prediction submitted!');
+      setFormData({
+        annualIncome: '',
+        loanDuration: '',
+        loanAmount: '',
+        age: '',
+        creditCardUtilization: '',
+        creditScore: '',
+        gender: '',
+        married: '',
+        bankruptcyHistory: '',
+        previousLoanDefaults: '',
+        education: '',
+        employmentStatus: '',
+        propertyArea: ''
+      })
+      
+       navigate('/result');
+    }
 
   };
 
