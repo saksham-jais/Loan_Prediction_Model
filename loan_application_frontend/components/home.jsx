@@ -74,7 +74,7 @@ const home = () => {
       <h1 className="text-[#0e141b] tracking-light lg:text-[32px] text-2xl font-bold leading-tight  max-w-[720px]">
         Ready to See Your Loan Prediction?
       </h1>
-    </div>
+    </div> 
     <div className="flex flex-1 justify-center">
       <div className="flex justify-center">
         <Link to="/prediction">
