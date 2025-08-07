@@ -4,7 +4,7 @@
       { "src": "./loan_application_backend/server.js", "use": "@vercel/node" }
     ],
     "routes": [
-      { "src": "/(.*)", "dest": "./loan_application_backend/server.js" }
+      { "src": "/(.*)", "dest": "/" }
     ]
   }
   
