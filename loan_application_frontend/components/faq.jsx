@@ -1,8 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const faq = () => {
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [expandedItems, setExpandedItems] = useState({});
+
+  useEffect(() => {
+    // Check if user is an employee and redirect to dashboard
+    const token = localStorage.getItem('authToken');
+    const employeeData = localStorage.getItem('employeeData');
+    
+    if (token && employeeData) {
+      try {
+        const employee = JSON.parse(employeeData);
+        if (employee.role === 'employee') {
+          // Redirect employee to dashboard immediately
+          navigate('/employee-dashboard', { replace: true });
+          return;
+        }
+      } catch (error) {
+        console.error('Error parsing employee data:', error);
+      }
+    }
+  }, [navigate]);
 
  
   const faqData = [

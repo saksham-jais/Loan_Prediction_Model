@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom'
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom'
 
 const AuthenticationPage = () => {
+  const navigate = useNavigate();
   const [loginType, setLoginType] = useState('user');
   const [formMode, setFormMode] = useState('login');
   const [showPassword, setShowPassword] = useState(false);
@@ -10,12 +11,29 @@ const AuthenticationPage = () => {
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
+    userid: '',
     password: '',
     confirmPassword: '',
     keepSignedIn: false,
     acceptTerms: false,
   });
   const [errors, setErrors] = useState({});
+
+  // Reset form mode to login when switching to employee
+  useEffect(() => {
+    if (loginType === 'employee') {
+      setFormMode('login');
+      // Clear user-specific fields
+      setFormData(prev => ({
+        ...prev,
+        fullName: '',
+        email: '',
+        confirmPassword: '',
+        acceptTerms: false
+      }));
+      setErrors({});
+    }
+  }, [loginType]);
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -29,6 +47,7 @@ const AuthenticationPage = () => {
     if (/[a-z]/.test(password)) score += 1;
     if (/[0-9]/.test(password)) score += 1;
     if (/[^A-Za-z0-9]/.test(password)) score += 1;
+    
 
     if (score <= 2) return { score, text: 'Weak', color: '#ef4444' };
     if (score <= 3) return { score, text: 'Medium', color: '#f59e0b' };
@@ -38,23 +57,30 @@ const AuthenticationPage = () => {
   const validateForm = () => {
     const newErrors = {};
 
-    if (formMode === 'signup' && !formData.fullName.trim()) {
+    if (formMode === 'signup' && loginType === 'user' && !formData.fullName.trim()) {
       newErrors.fullName = 'Full name is required';
     }
 
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
-    } else if (!validateEmail(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
+    if (loginType === 'user') {
+      if (!formData.email.trim()) {
+        newErrors.email = 'Email is required';
+      } else if (!validateEmail(formData.email)) {
+        newErrors.email = 'Please enter a valid email address';
+      }
+    } else {
+      // Employee login requires email or userid
+      if (!formData.email.trim() && !formData.userid.trim()) {
+        newErrors.email = 'Email or User ID is required';
+      }
     }
 
     if (!formData.password) {
       newErrors.password = 'Password is required';
-    } else if (formMode === 'signup' && formData.password.length < 8) {
+    } else if (formMode === 'signup' && loginType === 'user' && formData.password.length < 8) {
       newErrors.password = 'Password must be at least 8 characters';
     }
 
-    if (formMode === 'signup') {
+    if (formMode === 'signup' && loginType === 'user') {
       if (!formData.confirmPassword) {
         newErrors.confirmPassword = 'Please confirm your password';
       } else if (formData.password !== formData.confirmPassword) {
@@ -76,17 +102,130 @@ const AuthenticationPage = () => {
 
     setIsLoading(true);
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    setIsLoading(false);
-    console.log('Form submitted:', { loginType, formMode, formData });
+    try {
+      // Use local server when running locally, production server otherwise
+      const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+      const baseUrl = isLocalhost ? 'http://localhost:3000' : 'https://loan-prediction-model-eight.vercel.app';
+      
+      let endpoint, requestBody;
+
+      if (loginType === 'user') {
+        if (formMode === 'signup') {
+          endpoint = `${baseUrl}/user/signup`;
+          requestBody = {
+            name: formData.fullName,
+            email: formData.email,
+            password: formData.password
+          };
+        } else {
+          endpoint = `${baseUrl}/user/login`;
+          requestBody = {
+            email: formData.email,
+            password: formData.password
+          };
+        }
+      } else {
+        // Employee login only - support both email and userid
+        endpoint = `${baseUrl}/employee/login`;
+        requestBody = {
+          email: formData.email, // Send email if provided
+          userid: formData.userid, // Send userid if provided
+          password: formData.password
+        };
+      }
+
+      console.log('🔧 Making request to:', endpoint);
+      console.log('🔧 Request body:', requestBody);
+
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify(requestBody),
+        signal: controller.signal
+      });
+
+      clearTimeout(timeoutId);
+
+      console.log('Response status:', response.status);
+      console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+
+      const data = await response.json();
+      console.log('Response data:', data);
+
+      if (response.ok) {
+        // Handle successful response
+        if (loginType === 'employee') {
+          // Employee login - store token and employee data, redirect to dashboard
+          if (data.token) {
+            localStorage.setItem('authToken', data.token);
+            localStorage.setItem('employeeData', JSON.stringify(data.employee));
+            console.log('Employee login successful, redirecting to dashboard');
+            
+            // Show success message and redirect
+            alert('Employee login successful!');
+            navigate('/employee-dashboard');
+          } else {
+            setErrors({ general: 'No authentication token received' });
+          }
+        } else {
+          // User login/signup
+          if (formMode === 'signup') {
+            // User signup successful - just show message
+            console.log('User signup successful');
+            alert('Account created successfully! Please login to continue.');
+            setFormMode('login'); // Switch to login mode
+            setFormData(prev => ({ ...prev, password: '', confirmPassword: '' })); // Clear passwords
+          } else {
+            // User login successful - store token and user data, redirect to prediction page
+            if (data.token && data.user) {
+              localStorage.setItem('authToken', data.token);
+              localStorage.setItem('userData', JSON.stringify(data.user));
+              console.log('User login successful, redirecting to prediction page');
+              
+              alert('Login successful!');
+              navigate('/prediction');
+            } else {
+              // Fallback for old API response without token
+              localStorage.setItem('userData', JSON.stringify(data.user));
+              console.log('User login successful (no token), redirecting to prediction page');
+              
+              alert('Login successful!');
+              navigate('/prediction');
+            }
+          }
+        }
+        
+      } else {
+        // Handle error response
+        console.error('Server error:', data);
+        setErrors({ general: data.message || 'Something went wrong' });
+      }
+
+    } catch (error) {
+      console.error('Network error details:', error);
+      
+      if (error.name === 'AbortError') {
+        setErrors({ general: 'Request timeout. Please try again.' });
+      } else if (error.message.includes('Failed to fetch')) {
+        setErrors({ general: 'Unable to connect to server. Please check your internet connection and try again.' });
+      } else {
+        setErrors({ general: `Network error: ${error.message}. Please try again.` });
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
-    if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: undefined }));
+    if (errors[field] || errors.general) {
+      setErrors(prev => ({ ...prev, [field]: undefined, general: undefined }));
     }
   };
 
@@ -186,37 +325,46 @@ const AuthenticationPage = () => {
                 </p>
               </div>
 
-              {/* Form Mode Toggle */}
-              <div className="flex justify-center mb-6">
-                <div className="flex bg-gray-100 rounded-lg p-1">
-                  <button
-                    onClick={() => setFormMode('login')}
-                    className={`px-4 py-2 text-sm font-medium rounded-md transition-all ${
-                      formMode === 'login'
-                        ? 'bg-white text-gray-900 shadow-sm'
-                        : 'text-gray-600 hover:text-gray-800'
-                    }`}
-                  >
-                    Login
-                  </button>
-                  <button
-                    onClick={() => setFormMode('signup')}
-                    className={`px-4 py-2 text-sm font-medium rounded-md transition-all ${
-                      formMode === 'signup'
-                        ? 'bg-white text-gray-900 shadow-sm'
-                        : 'text-gray-600 hover:text-gray-800'
-                    }`}
-                  >
-                    Sign Up
-                  </button>
+              {/* Form Mode Toggle - Only show for User login */}
+              {loginType === 'user' && (
+                <div className="flex justify-center mb-6">
+                  <div className="flex bg-gray-100 rounded-lg p-1">
+                    <button
+                      onClick={() => setFormMode('login')}
+                      className={`px-4 py-2 text-sm font-medium rounded-md transition-all ${
+                        formMode === 'login'
+                          ? 'bg-white text-gray-900 shadow-sm'
+                          : 'text-gray-600 hover:text-gray-800'
+                      }`}
+                    >
+                      Login
+                    </button>
+                    <button
+                      onClick={() => setFormMode('signup')}
+                      className={`px-4 py-2 text-sm font-medium rounded-md transition-all ${
+                        formMode === 'signup'
+                          ? 'bg-white text-gray-900 shadow-sm'
+                          : 'text-gray-600 hover:text-gray-800'
+                      }`}
+                    >
+                      Sign Up
+                    </button>
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Form */}
               <form onSubmit={handleSubmit} className="space-y-5">
+                {/* Error Message */}
+                {errors.general && (
+                  <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
+                    {errors.general}
+                  </div>
+                )}
+
                 <div className="space-y-4">
-                  {/* Full Name Field (Sign Up Only) */}
-                  {formMode === 'signup' && (
+                  {/* Full Name Field (User Sign Up Only) */}
+                  {formMode === 'signup' && loginType === 'user' && (
                     <div className="space-y-2">
                       <label htmlFor="fullName" className="text-sm font-medium text-gray-900">
                         Full Name
@@ -237,25 +385,49 @@ const AuthenticationPage = () => {
                     </div>
                   )}
 
-                  {/* Email Field */}
-                  <div className="space-y-2">
-                    <label htmlFor="email" className="text-sm font-medium text-gray-900">
-                      Email Address
-                    </label>
-                    <input
-                      id="email"
-                      type="email"
-                      placeholder="hello@example.com"
-                      value={formData.email}
-                      onChange={(e) => handleInputChange('email', e.target.value)}
-                      className={`w-full h-12 px-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                        errors.email ? 'border-red-500' : 'border-gray-300'
-                      }`}
-                    />
-                    {errors.email && (
-                      <p className="text-sm text-red-500">{errors.email}</p>
-                    )}
-                  </div>
+                  {/* User ID Field (Employee Only) */}
+                  {loginType === 'employee' && (
+                    <div className="space-y-2">
+                      <label htmlFor="userid" className="text-sm font-medium text-gray-900">
+                        User ID
+                      </label>
+                      <input
+                        id="userid"
+                        type="text"
+                        placeholder="Enter your user ID"
+                        value={formData.userid}
+                        onChange={(e) => handleInputChange('userid', e.target.value)}
+                        className={`w-full h-12 px-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                          errors.userid ? 'border-red-500' : 'border-gray-300'
+                        }`}
+                      />
+                      {errors.userid && (
+                        <p className="text-sm text-red-500">{errors.userid}</p>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Email Field (User Only) */}
+                  {loginType === 'user' && (
+                    <div className="space-y-2">
+                      <label htmlFor="email" className="text-sm font-medium text-gray-900">
+                        Email Address
+                      </label>
+                      <input
+                        id="email"
+                        type="email"
+                        placeholder="hello@example.com"
+                        value={formData.email}
+                        onChange={(e) => handleInputChange('email', e.target.value)}
+                        className={`w-full h-12 px-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                          errors.email ? 'border-red-500' : 'border-gray-300'
+                        }`}
+                      />
+                      {errors.email && (
+                        <p className="text-sm text-red-500">{errors.email}</p>
+                      )}
+                    </div>
+                  )}
 
                   {/* Password Field */}
                   <div className="space-y-2">
@@ -263,7 +435,7 @@ const AuthenticationPage = () => {
                       <label htmlFor="password" className="text-sm font-medium text-gray-900">
                         Password
                       </label>
-                      {formMode === 'login' && (
+                      {formMode === 'login' && loginType === 'user' && (
                         <button
                           type="button"
                           className="text-sm cursor-pointer text-green-500 hover:text-green-700 transition-colors"
@@ -292,8 +464,8 @@ const AuthenticationPage = () => {
                       </button>
                     </div>
 
-                    {/* Password Strength Indicator (Sign Up Only) */}
-                    {formMode === 'signup' && formData.password && (
+                    {/* Password Strength Indicator (User Sign Up Only) */}
+                    {formMode === 'signup' && loginType === 'user' && formData.password && (
                       <div className="space-y-1">
                         <div className="flex items-center gap-2">
                           <div className="flex-1 bg-gray-200 rounded-full h-2">
@@ -317,8 +489,8 @@ const AuthenticationPage = () => {
                     )}
                   </div>
 
-                  {/* Confirm Password Field (Sign Up Only) */}
-                  {formMode === 'signup' && (
+                  {/* Confirm Password Field (User Sign Up Only) */}
+                  {formMode === 'signup' && loginType === 'user' && (
                     <div className="space-y-2">
                       <label htmlFor="confirmPassword" className="text-sm font-medium text-gray-900">
                         Confirm Password
@@ -350,7 +522,7 @@ const AuthenticationPage = () => {
 
                   {/* Keep me signed in / Terms */}
                   <div className="space-y-3">
-                    {formMode === 'login' ? (
+                    {(formMode === 'login' || loginType === 'employee') ? (
                       <div className="flex items-center  space-x-2">
                         <input
                           id="keep-signed-in"
@@ -411,10 +583,12 @@ const AuthenticationPage = () => {
                       <>
                         <LoaderIcon />
                         <span className="ml-2">
-                          {formMode === 'login' ? 'Signing in...' : 'Creating account...'}
+                          {loginType === 'employee' ? 'Signing in...' : 
+                           formMode === 'login' ? 'Signing in...' : 'Creating account...'}
                         </span>
                       </>
                     ) : (
+                      loginType === 'employee' ? 'Sign In' :
                       formMode === 'login' ? 'Continue' : 'Create Account'
                     )}
                   </button>
@@ -479,18 +653,20 @@ const AuthenticationPage = () => {
               </div>
 
               {/* Footer Link */}
-              <div className="text-center mt-6">
-                <p className="text-sm text-gray-600">
-                  {formMode === 'login' ? "Don't have an account?" : "Already have an account?"}{' '}
-                  <button
-                    type="button"
-                    onClick={() => setFormMode(formMode === 'login' ? 'signup' : 'login')}
-                    className="text-emerald-600 hover:emerald-700 font-medium transition-colors cursor-pointer"
-                  >
-                    {formMode === 'login' ? 'Sign up here' : 'Sign in here'}
-                  </button>
-                </p>
-              </div>
+              {loginType === 'user' && (
+                <div className="text-center mt-6">
+                  <p className="text-sm text-gray-600">
+                    {formMode === 'login' ? "Don't have an account?" : "Already have an account?"}{' '}
+                    <button
+                      type="button"
+                      onClick={() => setFormMode(formMode === 'login' ? 'signup' : 'login')}
+                      className="text-emerald-600 hover:emerald-700 font-medium transition-colors cursor-pointer"
+                    >
+                      {formMode === 'login' ? 'Sign up here' : 'Sign in here'}
+                    </button>
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         </div>
