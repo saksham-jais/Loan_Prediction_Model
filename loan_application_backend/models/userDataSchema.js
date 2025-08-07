@@ -1,7 +1,7 @@
 // models/userSchema.js
 const mongoose = require('mongoose');
 
-const userSchema = new mongoose.Schema({
+const userDataSchema = new mongoose.Schema({
   Age: { type: Number, required: true },
   AnnualIncome: { type: Number, required: true },
   Creditscore: { type: Number, required: true },
@@ -20,4 +20,4 @@ const userSchema = new mongoose.Schema({
   RiskScore: { type: Number, required: true }
 });
 
-module.exports = userSchema;
+module.exports = userDataSchema;
