@@ -12,6 +12,10 @@ mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('Connected to MongoDB'))
   .catch(err => { console.error('MongoDB error:', err); process.exit(1); });
 
+app.get('/',(req,res)=>{
+  res.status(200).json({message:"Loaded"});
+})
+
 // POST /user (already in your code)
 app.post('/user/traindata', async (req, res) => {
   try {
@@ -43,8 +47,6 @@ app.post('/user/testdata', async (req, res) => {
       res.status(400).json({ error: 'Invalid data', details: error.message });
     }
   });
-  
-  
 app.get('/user/testdata', async (req, res) => {
     try {
       const testUsers = await TestUser.find();
@@ -56,4 +58,5 @@ app.get('/user/testdata', async (req, res) => {
 // app.listen(PORT, () => {
 //   console.log(`Server running on port ${PORT}`);
 // });
+
 module.exports = app;
