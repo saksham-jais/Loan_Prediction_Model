@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "public": "dist",
+    "public": "./loan_application_frontend/dist",
     "ignore": [
       "firebase.json",
       "**/.*",
