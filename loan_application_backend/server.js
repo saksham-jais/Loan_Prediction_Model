@@ -4,7 +4,7 @@ const {User,TestUser} = require('./models/userModels.js'); // Adjust path as nee
 require('dotenv').config();
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 
@@ -55,8 +55,8 @@ app.get('/user/testdata', async (req, res) => {
       res.status(500).json({ error: 'Failed to fetch TestUser data', details: error.message });
     }
   });
-// app.listen(PORT, () => {
-//   console.log(`Server running on port ${PORT}`);
-// });
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
 
-module.exports = app;
+// module.exports = app;
