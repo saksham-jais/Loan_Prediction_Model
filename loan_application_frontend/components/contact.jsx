@@ -1,10 +1,31 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const contact = () => {
+  const navigate = useNavigate();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
+
+  useEffect(() => {
+    // Check if user is an employee and redirect to dashboard
+    const token = localStorage.getItem('authToken');
+    const employeeData = localStorage.getItem('employeeData');
+    
+    if (token && employeeData) {
+      try {
+        const employee = JSON.parse(employeeData);
+        if (employee.role === 'employee') {
+          // Redirect employee to dashboard immediately
+          navigate('/employee-dashboard', { replace: true });
+          return;
+        }
+      } catch (error) {
+        console.error('Error parsing employee data:', error);
+      }
+    }
+  }, [navigate]);
 
   const handleSubmit = (e) => {
     e.preventDefault();

@@ -1,8 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-const Prediction = () => {
 
-   const navigate = useNavigate();
+const Prediction = () => {
+  const navigate = useNavigate();
+  const [userData, setUserData] = useState(null);
+
+  // Check if user is authenticated
+  useEffect(() => {
+    const storedUserData = localStorage.getItem('userData');
+    if (!storedUserData) {
+      alert('Please login to access the prediction feature');
+      navigate('/auth');
+      return;
+    }
+    
+    try {
+      const user = JSON.parse(storedUserData);
+      setUserData(user);
+    } catch (error) {
+      console.error('Error parsing user data:', error);
+      navigate('/auth');
+    }
+  }, [navigate]);
 
   const [formData, setFormData] = useState({
     annualIncome: '',
@@ -27,6 +46,12 @@ const Prediction = () => {
       ...prev,
       [name]: value
     }));
+  };
+
+  // Handle logout
+  const handleLogout = () => {
+    localStorage.removeItem('userData');
+    navigate('/auth');
   };
 
   // Handle button for form submission
@@ -65,6 +90,33 @@ const Prediction = () => {
 
   return (
     <>
+      {/* Header */}
+      {userData && (
+        <header className="bg-white shadow-sm border-b">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-center py-4">
+              <div className="flex items-center">
+                <h1 className="text-2xl font-bold text-gray-900">LoanPredict</h1>
+                <span className="ml-3 px-3 py-1 bg-green-100 text-green-800 text-sm font-medium rounded-full">
+                  User Portal
+                </span>
+              </div>
+              <div className="flex items-center space-x-4">
+                <div className="text-sm text-gray-600">
+                  Welcome, <span className="font-medium">{userData.name}</span>
+                </div>
+                <button
+                  onClick={handleLogout}
+                  className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
+                >
+                  Logout
+                </button>
+              </div>
+            </div>
+          </div>
+        </header>
+      )}
+
       <div className="lg:px-40 flex flex-1 justify-center py-5">
         <div className="layout-content-container flex flex-col w-[512px]  py-5 max-w-[960px] flex-1">
           <h2 className="text-[#0e141b] tracking-light text-[28px] font-bold leading-tight px-4 text-center pb-3 pt-5">Loan Prediction Form</h2>

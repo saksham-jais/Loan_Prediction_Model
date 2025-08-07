@@ -1,6 +1,27 @@
-import React from 'react'
-import { Link } from 'react-router-dom';
+import React, { useEffect } from 'react'
+import { Link, useNavigate } from 'react-router-dom';
+
 const working = () => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Check if user is an employee and redirect to dashboard
+    const token = localStorage.getItem('authToken');
+    const employeeData = localStorage.getItem('employeeData');
+    
+    if (token && employeeData) {
+      try {
+        const employee = JSON.parse(employeeData);
+        if (employee.role === 'employee') {
+          // Redirect employee to dashboard immediately
+          navigate('/employee-dashboard', { replace: true });
+          return;
+        }
+      } catch (error) {
+        console.error('Error parsing employee data:', error);
+      }
+    }
+  }, [navigate]);
   return (
     <div className="  px-5 lg:py-10 py-5 max-w-6xl mx-auto text-black">
       <div className=" leading-relaxed flex flex-col gap-3 lg:px-2 px-2 lg:py-5 py-0">
