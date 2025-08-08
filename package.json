@@ -1,0 +1,11 @@
+{
+  "name": "loan_prediction_model",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./loan_application_frontend/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
