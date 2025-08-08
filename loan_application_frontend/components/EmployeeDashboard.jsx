@@ -33,7 +33,7 @@ const EmployeeDashboard = () => {
   const fetchData = async (token) => {
     try {
       setIsLoading(true);
-      const baseUrl = window.location.hostname === 'localhost' ? 'http://localhost:3000' : 'https://loan-prediction-model-eight.vercel.app';
+      const baseUrl = 'https://loan-prediction-model-eight.vercel.app';
       
       // Fetch all users data
       const usersResponse = await fetch(`${baseUrl}/user/traindata`, {
@@ -96,7 +96,7 @@ const EmployeeDashboard = () => {
     console.log('Predict for user:', user);
     
     try {
-      const baseUrl = window.location.hostname === 'localhost' ? 'http://localhost:3000' : 'https://loan-prediction-model-eight.vercel.app';
+      const baseUrl = 'https://loan-prediction-model-eight.vercel.app';
       
       // Here you would typically call a prediction API
       // For now, we'll just simulate it

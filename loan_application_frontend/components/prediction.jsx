@@ -96,7 +96,7 @@ const Prediction = () => {
     }
 
     try {
-      const baseUrl = window.location.hostname === 'localhost' ? 'http://localhost:3000' : 'https://loan-prediction-model-eight.vercel.app';
+      const baseUrl = 'https://loan-prediction-model-eight.vercel.app';
       
       // Prepare data for submission
       const submissionData = {
