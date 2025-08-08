@@ -56,3 +56,26 @@ Thumbs.db
 .idea/
 *.swp
 *.swo
+
+# Byte-compiled / cache files
+__pycache__/
+*.py[cod]
+*.so
+*.log
+
+# Virtual environment
+loan_venv/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Environment files
+.env
+*.env
+
+# VSCode or other IDE folders
+.vscode/
+.idea/
+
+# Mac system files
+.DS_Store
