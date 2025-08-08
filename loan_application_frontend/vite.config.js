@@ -3,6 +3,5 @@ import react from '@vitejs/plugin-react-swc'
 import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
-  root: 'loan_application_frontend', // <--  frontend folder as root
   plugins: [react(), tailwindcss()],
 })
