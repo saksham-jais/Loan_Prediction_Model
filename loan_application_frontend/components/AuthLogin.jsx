@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom';
 
 const AuthenticationPage = () => {
   const navigate = useNavigate();
@@ -103,10 +103,8 @@ const AuthenticationPage = () => {
     setIsLoading(true);
     
     try {
-      // Use local server when running locally, production server otherwise
-      const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-      const baseUrl = isLocalhost ? 'http://localhost:3000' : 'https://loan-prediction-model-eight.vercel.app';
-      
+      // Vercel production server
+      const baseUrl = 'https://loan-prediction-model-eight.vercel.app';
       let endpoint, requestBody;
 
       if (loginType === 'user') {

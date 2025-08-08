@@ -22,7 +22,7 @@ export const getCurrentUser = () => {
       return null;
     }
   }
-  
+
   if (employeeData) {
     try {
       const employee = JSON.parse(employeeData);
@@ -48,17 +48,12 @@ export const clearAuth = () => {
   localStorage.removeItem('employeeData');
 };
 
-// Verify JWT token with backend (optional - for additional security)
 export const verifyToken = async () => {
   const token = getAuthToken();
   if (!token) return false;
-  
+
   try {
-    const baseUrl = window.location.hostname === 'localhost' 
-      ? 'http://localhost:3000' 
-      : 'https://loan-prediction-model-eight.vercel.app';
-    
-    const response = await fetch(`${baseUrl}/auth/verify`, {
+    const response = await fetch('https://loan-prediction-model-eight.vercel.app/auth/verify', {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${token}`,
