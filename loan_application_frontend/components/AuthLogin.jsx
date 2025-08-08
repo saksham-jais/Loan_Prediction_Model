@@ -68,9 +68,9 @@ const AuthenticationPage = () => {
         newErrors.email = 'Please enter a valid email address';
       }
     } else {
-      // Employee login requires email or userid
-      if (!formData.email.trim() && !formData.userid.trim()) {
-        newErrors.email = 'Email or User ID is required';
+      // Employee login requires userid
+      if (!formData.userid.trim()) {
+        newErrors.userid = 'User ID is required';
       }
     }
 
@@ -125,11 +125,10 @@ const AuthenticationPage = () => {
           };
         }
       } else {
-        // Employee login only - support both email and userid
+        // Employee login only - send userid
         endpoint = `${baseUrl}/employee/login`;
         requestBody = {
-          email: formData.email, // Send email if provided
-          userid: formData.userid, // Send userid if provided
+          userid: formData.userid,
           password: formData.password
         };
       }
