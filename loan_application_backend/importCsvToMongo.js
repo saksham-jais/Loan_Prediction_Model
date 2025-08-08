@@ -2,7 +2,7 @@ const fs = require('fs');
 const csv = require('csv-parser');
 const axios = require('axios');
 
-const SERVER_URL = 'http://localhost:3000/user';
+const SERVER_URL = 'http://localhost:3000/user/traindata';
 const CSV_FILE = 'loan.csv'; // CSV file path — ensure columns match your schema
 
 // Map and convert CSV row to schema-compatible object

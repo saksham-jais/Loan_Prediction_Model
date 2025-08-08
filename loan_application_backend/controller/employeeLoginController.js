@@ -8,11 +8,7 @@ const path = require('path');
 require('dotenv').config({ path: path.resolve(__dirname, '../.env') }); 
 
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-default-secret-key-change-in-production';
-
-if (!process.env.JWT_SECRET) {
-  console.warn('Warning: JWT_SECRET not set in environment variables, using default');
-}
+const JWT_SECRET = process.env.JWT_SECRET;
 
 // GET all employees - returns all employee data (excluding passwords)
 router.get('/', authenticateToken, async (req, res) => {
@@ -71,66 +67,38 @@ router.post('/signup', async (req, res) => {
 
 // POST /login - authenticate user and return token if credentials match
 router.post('/login', async (req, res) => {
-  const { userid, email, password } = req.body;
+  const { userid, password } = req.body;
 
   try {
-    console.log('Employee login request received:', req.body);
-
-    // Accept either userid or email for login
-    const loginField = email || userid;
-    
-    if (!loginField || !password) {
-      console.log('Missing login credentials');
-      return res.status(400).json({ message: 'Email/User ID and password are required' });
-    }
-
-    // Find employee by email or userid
-    const employee = await Employee.findOne({
-      $or: [
-        { email: loginField },
-        { userid: loginField }
-      ]
-    });
-    
+    // Find employee by userid
+    const employee = await Employee.findOne({ userid });
     if (!employee) {
-      console.log('Employee not found:', loginField);
-      return res.status(400).json({ message: 'Invalid credentials' });
+      return res.status(400).json({ message: 'Invalid userid or password' });
     }
 
     // Compare passwords
     const isMatch = await bcrypt.compare(password, employee.password);
     if (!isMatch) {
-      console.log('Password mismatch for employee:', loginField);
-      return res.status(400).json({ message: 'Invalid credentials' });
+      return res.status(400).json({ message: 'Invalid userid or password' });
     }
 
     // Generate JWT token
     const token = jwt.sign(
-      { 
-        id: employee._id,
-        email: employee.email,
-        userid: employee.userid,
-        role: 'employee'
-      },
+      { userid: employee.userid, id: employee._id },
       JWT_SECRET,
-      { expiresIn: '24h' }
+      { expiresIn: '1h' }
     );
 
-    console.log('Employee login successful:', loginField);
     res.json({
       employee: {
         id: employee._id,
-        name: employee.name,
-        email: employee.email,
         userid: employee.userid,
-        bank: employee.bank,
-        role: 'employee'
+        bank: employee.bank
       },
       token
     });
   } catch (err) {
-    console.error('Employee login error:', err);
-    res.status(500).json({ message: err.message || 'Internal server error' });
+    res.status(500).json({ message: err.message });
   }
 });
 
