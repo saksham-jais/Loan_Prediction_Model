@@ -11,7 +11,7 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 
-mongoose.connect(process.env.MONGODB_URI)
+mongoose.connect(process.env.MONGODB_URI,{ dbName: 'Loan-Prediction-Model' })
   .then(() => console.log('Connected to MongoDB'))
   .catch(err => { console.error('MongoDB error:', err); process.exit(1); });
 
