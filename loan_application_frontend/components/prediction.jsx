@@ -147,7 +147,7 @@ const Prediction = () => {
           InterestRate: ''
         });
         
-        navigate('/result');
+        navigate('/');
       } else {
         const errorData = await response.json();
         console.error('Error saving data:', errorData);
