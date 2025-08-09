@@ -1,0 +1,39 @@
+from flask import Flask, request, jsonify
+import pickle
+import numpy as np
+from flask_cors import CORS
+
+app = Flask(__name__)
+CORS(app)
+
+with open('load_model.pkl', 'rb') as f:
+    clf_model = pickle.load(f)
+
+@app.route('/predict', methods=['POST'])
+def predict():
+    data = request.get_json()
+
+    try:
+        features = [
+            float(data['annualIncome']),
+            float(data['loanDuration']),
+            float(data['loanAmount']),
+            float(data['age']),
+            float(data['creditCardUtilization']),
+            int(data['creditScore']),
+            int(data['bankruptcyHistory']) if data['bankruptcyHistory'] != "3+" else 3,
+            int(data['previousLoanDefaults']) if data['previousLoanDefaults'] != "3+" else 3,
+            ['Graduate', 'Associate', 'Master', 'Bachelor', 'High School'].index(data['education']),
+            1 if data['employmentStatus'] == 'Yes' else 0,
+        ]
+
+        prediction = clf_model.predict([features])
+        result = 'Approved' if prediction[0] == 1 else 'Rejected'
+
+        return jsonify({'result': result})
+    
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+
+if __name__ == '__main__':
+    app.run(debug=True)
