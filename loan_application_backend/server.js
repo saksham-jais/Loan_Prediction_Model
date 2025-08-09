@@ -5,6 +5,7 @@ const cors = require('cors');
 const employeeLoginRoutes = require('./controller/employeeLoginController.js');
 const userLoginRoutes = require('./controller/userLoginController.js');
 const userDataRoutes = require('./controller/userDataController.js');
+const panCardRoutes = require('./controller/panCardController.js');
 require('dotenv').config();
 
 const app = express();
@@ -24,7 +25,7 @@ app.get('/',(req,res)=>{res.status(200).json({message:"Loaded"});})
 app.use('/employee', employeeLoginRoutes);
 app.use('/user', userLoginRoutes);
 app.use('/user', userDataRoutes);
-
+app.use('/pancard', panCardRoutes);
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
