@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Connection Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>API Connection Test</h1>
+        <p>Test the connection between your Firebase hosted frontend and Vercel backend.</p>
+        
+        <button onclick="testConnection()">Test Server Connection</button>
+        <button onclick="testCORS()">Test CORS</button>
+        <button onclick="testUserLogin()">Test User Login Endpoint</button>
+        <button onclick="testEmployeeLogin()">Test Employee Login Endpoint</button>
+        
+        <div id="result"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'https://loan-prediction-model-eight.vercel.app';
+        
+        function showResult(message, type = 'info') {
+            const resultDiv = document.getElementById('result');
+            resultDiv.className = `result ${type}`;
+            resultDiv.textContent = message;
+        }
+        
+        async function testConnection() {
+            showResult('Testing connection...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE}/`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                    }
+                });
+                
+                const data = await response.json();
+                showResult(`✅ Connection successful!\nStatus: ${response.status}\nResponse: ${JSON.stringify(data, null, 2)}`, 'success');
+            } catch (error) {
+                showResult(`❌ Connection failed!\nError: ${error.message}\nDetails: ${error.stack}`, 'error');
+            }
+        }
+        
+        async function testCORS() {
+            showResult('Testing CORS policy...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE}/`, {
+                    method: 'OPTIONS',
+                    headers: {
+                        'Origin': window.location.origin,
+                        'Access-Control-Request-Method': 'POST',
+                        'Access-Control-Request-Headers': 'Content-Type',
+                    }
+                });
+                
+                const corsHeaders = {
+                    'Access-Control-Allow-Origin': response.headers.get('Access-Control-Allow-Origin'),
+                    'Access-Control-Allow-Methods': response.headers.get('Access-Control-Allow-Methods'),
+                    'Access-Control-Allow-Headers': response.headers.get('Access-Control-Allow-Headers'),
+                    'Access-Control-Allow-Credentials': response.headers.get('Access-Control-Allow-Credentials')
+                };
+                
+                showResult(`✅ CORS test completed!\nStatus: ${response.status}\nCORS Headers:\n${JSON.stringify(corsHeaders, null, 2)}\nOrigin: ${window.location.origin}`, 'success');
+            } catch (error) {
+                showResult(`❌ CORS test failed!\nError: ${error.message}`, 'error');
+            }
+        }
+        
+        async function testUserLogin() {
+            showResult('Testing user login endpoint...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE}/user/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: 'test@example.com',
+                        password: 'testpassword'
+                    })
+                });
+                
+                const data = await response.json();
+                showResult(`✅ User login endpoint reachable!\nStatus: ${response.status}\nResponse: ${JSON.stringify(data, null, 2)}`, response.ok ? 'success' : 'info');
+            } catch (error) {
+                showResult(`❌ User login endpoint failed!\nError: ${error.message}`, 'error');
+            }
+        }
+        
+        async function testEmployeeLogin() {
+            showResult('Testing employee login endpoint...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE}/employee/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        userid: 'testuser',
+                        password: 'testpassword'
+                    })
+                });
+                
+                const data = await response.json();
+                showResult(`✅ Employee login endpoint reachable!\nStatus: ${response.status}\nResponse: ${JSON.stringify(data, null, 2)}`, response.ok ? 'success' : 'info');
+            } catch (error) {
+                showResult(`❌ Employee login endpoint failed!\nError: ${error.message}`, 'error');
+            }
+        }
+    </script>
+</body>
+</html>

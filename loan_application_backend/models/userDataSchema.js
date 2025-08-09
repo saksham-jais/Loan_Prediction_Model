@@ -16,8 +16,8 @@ const userDataSchema = new mongoose.Schema({
   TotalLiabilities: { type: Number, required: true },
   NetWorth: { type: Number, required: true },
   InterestRate: { type: Number, required: true },
-  LoanApproved: { type: Boolean, required: true },
-  RiskScore: { type: Number, required: true }
+  LoanApproved: { type: Boolean, required: false, default: false },
+  RiskScore: { type: Number, required: false, default: 0 },
 });
 
 module.exports = userDataSchema;

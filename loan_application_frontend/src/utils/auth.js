@@ -54,9 +54,7 @@ export const verifyToken = async () => {
   if (!token) return false;
   
   try {
-    const baseUrl = window.location.hostname === 'localhost' 
-      ? 'http://localhost:3000' 
-      : 'https://loan-prediction-model-eight.vercel.app';
+    const baseUrl = 'https://loan-prediction-model-eight.vercel.app';
     
     const response = await fetch(`${baseUrl}/auth/verify`, {
       method: 'GET',
