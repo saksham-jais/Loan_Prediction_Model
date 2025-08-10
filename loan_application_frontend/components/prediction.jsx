@@ -76,7 +76,7 @@ const Prediction = () => {
     }
 
     try {
-      const baseUrl = "https://model-fawn.vercel.app";
+      const baseUrl = "https://loan-prediction-model-1.onrender.com";
 
       const submissionData = {
         annualIncome: parseFloat(formData.AnnualIncome),
