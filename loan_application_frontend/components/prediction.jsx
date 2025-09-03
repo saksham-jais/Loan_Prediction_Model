@@ -7,6 +7,7 @@ const Prediction = () => {
   const [predictionResult, setPredictionResult] = useState(null);
   const [riskScore, setRiskScore] = useState(null);
   const [showResults, setShowResults] = useState(false); // For animation
+  const [isLoading, setIsLoading] = useState(false); // For loading state
 
   useEffect(() => {
     const storedUserData = localStorage.getItem('userData');
@@ -76,6 +77,7 @@ const Prediction = () => {
     }
 
     try {
+      setIsLoading(true); // Start loading
       const baseUrl = "https://loan-prediction-model-1.onrender.com";
 
       const submissionData = {
@@ -117,6 +119,8 @@ const Prediction = () => {
     } catch (error) {
       console.error('Network error:', error);
       alert('Network error. Please try again.');
+    } finally {
+      setIsLoading(false); // Stop loading
     }
   };
 
@@ -272,15 +276,35 @@ const Prediction = () => {
             <div className="flex px-4 py-3 justify-center">
               <button
                 type="submit"
-                className="flex min-w-[84px] max-w-[480px] items-center justify-center rounded-lg h-10 px-4 bg-[#1978e5] text-slate-50 text-sm font-bold"
+                disabled={isLoading}
+                className={`flex min-w-[84px] max-w-[480px] items-center justify-center rounded-lg h-10 px-4 text-slate-50 text-sm font-bold transition-all ${
+                  isLoading 
+                    ? 'bg-gray-400 cursor-not-allowed' 
+                    : 'bg-[#1978e5] hover:bg-[#1565c0]'
+                }`}
               >
-                <span>Submit</span>
+                {isLoading ? (
+                  <div className="flex items-center space-x-2">
+                    <span>Predicting...</span>
+                  </div>
+                ) : (
+                  <span>Submit</span>
+                )}
               </button>
             </div>
           </form>
 
+          {/* Loading State */}
+          {isLoading && (
+            <div className="mt-6 flex flex-col items-center justify-center space-y-3">
+              <div className="w-12 h-12 border-4 border-blue-200 border-t-green-600 rounded-full animate-spin"></div>
+              <p className="text-gray-600 text-sm">Analyzing your loan application...</p>
+              <p className="text-gray-500 text-xs">This may take a few moments</p>
+            </div>
+          )}
+
           {/* Animated Results */}
-          {riskScore !== null && predictionResult && (
+          {!isLoading && riskScore !== null && predictionResult && (
             <div className={`mt-6 space-y-3 text-center transition-opacity duration-700 ${showResults ? 'opacity-100' : 'opacity-0'}`}>
               <div className="p-4 bg-blue-100 text-blue-800 rounded-lg font-semibold">
                 Risk Score: {riskScore}
