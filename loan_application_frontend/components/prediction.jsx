@@ -297,7 +297,7 @@ const Prediction = () => {
           {/* Loading State */}
           {isLoading && (
             <div className="mt-6 flex flex-col items-center justify-center space-y-3">
-              <div className="w-12 h-12 border-4 border-blue-200 border-t-green-600 rounded-full animate-spin"></div>
+              <div className="w-20 h-20 border-5 border-blue-200 border-t-green-600 rounded-full animate-spin"></div>
               <p className="text-gray-600 text-sm">Analyzing your loan application...</p>
               <p className="text-gray-500 text-xs">This may take a few moments</p>
             </div>
