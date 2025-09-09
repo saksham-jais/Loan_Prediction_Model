@@ -110,6 +110,16 @@ const EmployeeDashboard = () => {
     }
   };
 
+  const handlePredict = (index) => {
+  const user = testUsers[index];
+  if (user && user._id) {
+    navigate(`/predict/${user._id}`);
+  } else {
+    alert('User ID not found for prediction.');
+  }
+};
+
+
   // Generate random avatar colors
   const getAvatarColor = (name) => {
     const colors = ['bg-blue-500', 'bg-green-500', 'bg-purple-500', 'bg-pink-500', 'bg-indigo-500', 'bg-yellow-500'];

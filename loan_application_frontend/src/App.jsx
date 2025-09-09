@@ -7,6 +7,7 @@ import Result from '../components/result';
 import Prediction from '../components/prediction';
 import AuthLogin from '../components/AuthLogin';
 import EmployeeDashboard from '../components/EmployeeDashboard';
+import LoanPredictionForm from '../components/LoanPredictionForm';
 import { Routes, Route, Link, useNavigate, useLocation } from 'react-router-dom';
 
 const App = () => {
@@ -244,6 +245,7 @@ const App = () => {
         <Route path="/AuthLogin" element={<AuthLogin />} />
         <Route path="/auth" element={<AuthLogin />} />
         <Route path="/employee-dashboard" element={<EmployeeDashboard />} />
+        <Route path="/predict/:id" element={<LoanPredictionForm />} />
       </Routes>
 
     </>
