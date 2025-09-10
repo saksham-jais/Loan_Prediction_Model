@@ -34,8 +34,6 @@ const Sidebar = ({ currentStep, onSectionClick }) => (
   </nav>
 );
 
-
-
 // Bank list UI for "Select Bank" step
 const BankSelectionTable = ({ onApply }) => {
   const banks = [
@@ -90,6 +88,7 @@ const Prediction = () => {
   const [userData, setUserData] = useState(null);
   const [predictionResult, setPredictionResult] = useState(null);
   const [riskScore, setRiskScore] = useState(null);
+  const [approvalProbability, setApprovalProbability] = useState(null);
   const [showResults, setShowResults] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -154,67 +153,78 @@ const Prediction = () => {
     setSidebarStep(index);
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
 
-  const requiredFields = [
-    'Age', 'AnnualIncome', 'Creditscore', 'EmploymentStatus', 'EducationLevel',
-    'LoanAmount', 'LoanDuration', 'CreditCardUtilizationRate', 'LengthOfCreditHistory',
-    'TotalLiabilities', 'NetWorth', 'InterestRate'
-  ];
+    const requiredFields = [
+      'Age', 'AnnualIncome', 'Creditscore', 'EmploymentStatus', 'EducationLevel',
+      'LoanAmount', 'LoanDuration', 'CreditCardUtilizationRate', 'LengthOfCreditHistory',
+      'TotalLiabilities', 'NetWorth', 'InterestRate'
+    ];
 
-  const missingFields = requiredFields.filter(field => !formData[field] && formData[field] !== false);
-  if (missingFields.length > 0) {
-    alert(`Please fill in all required fields: ${missingFields.join(', ')}`);
-    return;
-  }
-
-  try {
-    const baseUrl = 'http://localhost:3000/user/testdata';
-
-    const submissionData = {
-  Age: parseInt(formData.Age),
-  AnnualIncome: parseFloat(formData.AnnualIncome),
-  Creditscore: parseInt(formData.Creditscore),
-  EmploymentStatus: formData.EmploymentStatus,    // String
-  EducationLevel: formData.EducationLevel,        // String
-  LoanAmount: parseFloat(formData.LoanAmount),
-  LoanDuration: parseInt(formData.LoanDuration),
-  CreditCardUtilizationRate: parseFloat(formData.CreditCardUtilizationRate),
-  BankruptcyHistory: formData.BankruptcyHistory === 'true' || formData.BankruptcyHistory === true,
-  PreviousLoanDefaults: formData.PreviousLoanDefaults === 'true' || formData.PreviousLoanDefaults === true,
-  LengthOfCreditHistory: parseInt(formData.LengthOfCreditHistory),
-  TotalLiabilities: parseFloat(formData.TotalLiabilities),
-  NetWorth: parseFloat(formData.NetWorth),
-  InterestRate: parseFloat(formData.InterestRate)
-};
-
-console.log("Submitting data:", submissionData);
-
-    const response = await fetch(baseUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(submissionData)
-    });
-
-    if (response.ok) {
-      alert('Data submitted successfully.');
-      setFormSubmitted(true);
-      setSidebarStep(1);
-    } else {
-      const errorData = await response.json();
-      alert(`Error: ${errorData.error}`);
+    const missingFields = requiredFields.filter(field => !formData[field] && formData[field] !== false);
+    if (missingFields.length > 0) {
+      alert(`Please fill in all required fields: ${missingFields.join(', ')}`);
+      setIsLoading(false);
+      return;
     }
-  } catch (error) {
-    console.error('Network error:', error);
-    alert('Network error. Please try again.');
-  }
-};
 
+    try {
+      const baseUrl = 'http://127.0.0.1:5000/predict';
+
+      const submissionData = {
+        Age: parseInt(formData.Age),
+        AnnualIncome: parseFloat(formData.AnnualIncome),
+        Creditscore: parseInt(formData.Creditscore),
+        EmploymentStatus: formData.EmploymentStatus,
+        EducationLevel: formData.EducationLevel,
+        LoanAmount: parseFloat(formData.LoanAmount),
+        LoanDuration: parseInt(formData.LoanDuration),
+        CreditCardUtilizationRate: parseFloat(formData.CreditCardUtilizationRate),
+        BankruptcyHistory: formData.BankruptcyHistory,
+        PreviousLoanDefaults: formData.PreviousLoanDefaults,
+        LengthOfCreditHistory: parseInt(formData.LengthOfCreditHistory),
+        TotalLiabilities: parseFloat(formData.TotalLiabilities),
+        NetWorth: parseFloat(formData.NetWorth),
+        InterestRate: parseFloat(formData.InterestRate)
+      };
+
+      console.log("Submitting data:", submissionData);
+
+      const response = await fetch(baseUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(submissionData)
+      });
+
+      const responseData = await response.json();
+
+      if (response.ok) {
+        setPredictionResult(responseData.result);
+        setRiskScore(responseData.risk_score);
+        setApprovalProbability(responseData.approval_probability);
+        setFormSubmitted(true);
+        setShowResults(true);
+        alert('Application submitted!');
+      } else {
+        alert(`Error: ${responseData.error}`);
+      }
+    } catch (error) {
+      console.error('Network error:', error);
+      alert('Network error. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleApplyBank = (bank) => {
     setSelectedBank(bank);
-    setSidebarStep(2); // Move to Review
+    setSidebarStep(2);
+  };
+
+  const handleSelectBank = () => {
+    setSidebarStep(1);
   };
 
   return (
@@ -257,7 +267,7 @@ console.log("Submitting data:", submissionData);
                 <p className="text-[#0e141b] text-base text-center pb-3">Fill the details below and submit application.</p>
                 <form onSubmit={handleSubmit} className="w-full max-w-lg">
                   {/* Form Fields */}
-                  {[ 
+                  {[
                     { name: 'Age', type: 'number', placeholder: 'Enter your age' },
                     { name: 'AnnualIncome', type: 'number', placeholder: 'Enter your annual income' },
                     { name: 'Creditscore', type: 'number', placeholder: 'Credit score (300-850)' },
@@ -377,6 +387,23 @@ console.log("Submitting data:", submissionData);
                     </button>
                   </div>
                 </form>
+                {showResults && (
+                  <div className="mt-6 p-4 bg-green-100 rounded-lg w-full max-w-lg">
+                    <p className="text-gray-800 font-medium pb-1">Loan Prediction: <span className="font-bold">{predictionResult || 'N/A'}</span></p>
+                    <p className="text-gray-800 font-medium pb-1">Risk Score: <span className="font-bold">{riskScore || 'N/A'}</span></p>
+                    <p className="text-gray-800 font-medium pb-1">Approval Probability: <span className="font-bold">{approvalProbability || 'N/A'}</span></p>
+                    {predictionResult === 'Approved' ? (
+                      <button
+                        onClick={handleSelectBank}
+                        className="mt-4 bg-[#1978e5] hover:bg-[#1565c0] text-white px-6 py-2 rounded-lg font-semibold"
+                      >
+                        Select Bank
+                      </button>
+                    ) : (
+                      <p className="text-red-600 font-medium mt-4">You are not eligible for a loan.</p>
+                    )}
+                  </div>
+                )}
               </div>
             )}
 
@@ -392,6 +419,7 @@ console.log("Submitting data:", submissionData);
                 <div className="max-w-xl w-full bg-[#f2f6fb] p-8 rounded-lg shadow">
                   <p className="text-gray-800 font-medium pb-1">Loan Prediction: <span className="font-bold">{predictionResult}</span></p>
                   <p className="text-gray-800 pb-1">Risk Score: <span className="font-bold">{riskScore}</span></p>
+                  <p className="text-gray-800 pb-1">Approval Probability: <span className="font-bold">{approvalProbability}</span></p>
                   <p className="text-gray-800 pb-1">Bank Chosen: <span className="font-bold">{selectedBank?.name}</span></p>
                   <p className="text-gray-800 pb-1">Loan Type: <span className="font-bold">{selectedBank?.type}</span></p>
                   <p className="text-gray-800 pb-4">Interest Rate: <span className="font-bold">{selectedBank?.rate}</span></p>
@@ -404,7 +432,6 @@ console.log("Submitting data:", submissionData);
                 </div>
               </div>
             )}
-
           </div>
         </div>
       </main>
