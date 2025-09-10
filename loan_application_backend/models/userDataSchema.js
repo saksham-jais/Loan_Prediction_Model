@@ -18,6 +18,7 @@ const userDataSchema = new mongoose.Schema({
   InterestRate: { type: Number, required: true },
   LoanApproved: { type: Boolean, required: false, default: false },
   RiskScore: { type: Number, required: false, default: 0 },
+  Status:{type:String,default:"pending"}
 });
 
 module.exports = userDataSchema;
