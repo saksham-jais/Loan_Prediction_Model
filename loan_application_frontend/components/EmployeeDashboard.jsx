@@ -91,34 +91,6 @@ const EmployeeDashboard = () => {
     }
   };
 
-  const handlePredict = async (userIndex) => {
-    const user = testUsers[userIndex];
-    console.log('Predict for user:', user);
-    
-    try {
-      const baseUrl = 'https://loan-prediction-model-eight.vercel.app';
-      
-      // Here you would typically call a prediction API
-      // For now, we'll just simulate it
-      const confirmed = confirm(`Run prediction for ${user?.submittedBy || 'User'}?\n\nLoan Amount: $${user?.LoanAmount?.toLocaleString()}\nCredit Score: ${user?.Creditscore}\nAnnual Income: $${user?.AnnualIncome?.toLocaleString()}`);
-      
-      if (confirmed) {
-        // In a real implementation, you'd call your ML prediction API here
-        // const predictionResult = await fetch(`${baseUrl}/api/predict`, { ... });
-        
-        alert(`Prediction initiated for ${user?.submittedBy || 'User'}. Results will be available shortly.`);
-        
-        // Refresh data to show updated status
-        const token = localStorage.getItem('authToken');
-        if (token) {
-          fetchData(token);
-        }
-      }
-    } catch (error) {
-      console.error('Error running prediction:', error);
-      alert('Error running prediction. Please try again.');
-    }
-  };
 
   const handleMarkIncomplete = async (userIndex) => {
     const user = testUsers[userIndex];
@@ -137,6 +109,16 @@ const EmployeeDashboard = () => {
       }
     }
   };
+
+  const handlePredict = (index) => {
+  const user = testUsers[index];
+  if (user && user._id) {
+    navigate(`/predict/${user._id}`);
+  } else {
+    alert('User ID not found for prediction.');
+  }
+};
+
 
   // Generate random avatar colors
   const getAvatarColor = (name) => {
@@ -183,50 +165,56 @@ const EmployeeDashboard = () => {
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
-        {/* Header */}
-        <header className="bg-white shadow-sm border-b px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Search"
-                  className="w-96 pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
-                <svg
-                  className="absolute left-3 top-2.5 h-5 w-5 text-gray-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
+          <header className="bg-white shadow-sm border-b px-6 py-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-4">
+                <div className="relative">
+            <input
+              type="text"
+              placeholder="Search"
+              className="w-96 pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+            <svg
+              className="absolute left-3 top-2.5 h-5 w-5 text-gray-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+                </div>
+              </div>
+              
+              <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-2">
+            <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center">
+              <span className="text-white text-sm font-semibold">👤</span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-gray-700 font-medium text-sm">
+                {employeeData?.userid || 'Employee ID'}
+              </span>
+              <span className="text-gray-500 text-xs">
+                {employeeData?.bank || 'Bank Name'}
+              </span>
+            </div>
+            <div className="w-6 h-6 bg-red-500 rounded-full flex items-center justify-center">
+              <span className="text-white text-xs">{Math.floor(Math.random() * 10)}</span>
+            </div>
+                </div>
+                <button
+            onClick={handleLogout}
+            className="text-gray-500 hover:text-gray-700"
                 >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013 3v1" />
+            </svg>
+                </button>
               </div>
             </div>
-            
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center">
-                  <span className="text-white text-sm font-semibold">👤</span>
-                </div>
-                <span className="text-gray-700 font-medium">Employee 01</span>
-                <div className="w-6 h-6 bg-red-500 rounded-full flex items-center justify-center">
-                  <span className="text-white text-xs">1</span>
-                </div>
-              </div>
-              <button
-                onClick={handleLogout}
-                className="text-gray-500 hover:text-gray-700"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                </svg>
-              </button>
-            </div>
-          </div>
-        </header>
+          </header>
 
-        {/* Main Content Area */}
+          {/* Main Content Area */}
         <main className="flex-1 p-6">
           {isLoading ? (
             <div className="flex items-center justify-center h-64">
@@ -245,18 +233,8 @@ const EmployeeDashboard = () => {
                   />
                   <span className="text-sm font-medium text-gray-700">Name</span>
                 </div>
-                <div className="grid grid-cols-4 gap-8 flex-1 ml-8">
+                <div className="grid grid-cols-3 gap-8 flex-1 ml-32">
                   <span className="text-sm font-medium text-gray-700">Email</span>
-                  <span className="text-sm font-medium text-gray-700">Application Date</span>
-                  <span className="text-sm font-medium text-gray-700">Actions</span>
-                  <span className="text-sm font-medium text-gray-700 flex items-center">
-                    Mark Incomplete
-                    <button className="ml-2 text-blue-500 hover:text-blue-700">
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                      </svg>
-                    </button>
-                  </span>
                 </div>
               </div>
 
@@ -285,11 +263,11 @@ const EmployeeDashboard = () => {
                       <span className="text-gray-600">
                         {user.submittedBy ? `${user.submittedBy.toLowerCase().replace(' ', '')}@gmail.com` : `user${index + 1}@gmail.com`}
                       </span>
-                      <span className="text-gray-600">
+                      {/* <span className="text-gray-600">
                         {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 
                          user.submittedAt ? new Date(user.submittedAt).toLocaleDateString() : 'Recent'}
-                      </span>
-                      <div>
+                      </span> */}
+                      <div className='ml-10'>
                         <button
                           onClick={() => handlePredict(index)}
                           className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-1 rounded-md text-sm font-medium transition-colors"
@@ -298,15 +276,20 @@ const EmployeeDashboard = () => {
                         </button>
                       </div>
                       <div>
-                        {user.status === 'approved' || user.LoanApproved === true ? (
-                          <span className="text-green-600 font-medium">Approved</span>
-                        ) : user.status === 'rejected' || user.LoanApproved === false ? (
-                          <span className="text-red-600 font-medium">Rejected</span>
-                        ) : user.status === 'processing' ? (
-                          <span className="text-blue-600 font-medium">Processing</span>
-                        ) : (
-                          <span className="text-gray-500 font-medium">Pending</span>
-                        )}
+                        <select 
+                          // value={
+                          //   user.status === 'approved' || user.LoanApproved === true ? 'approved' :
+                          //   user.status === 'rejected' || user.LoanApproved === false ? 'rejected' :
+                          //   'pending'
+                          // }
+                          onChange={(e) => handleStatusChange(index, e.target.value)}
+                          className="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        >
+                          <option value="pending" className="text-gray-500" disabled>choose</option>
+                          <option value="pending" className="text-black" >pending</option>
+                          <option value="approved" className="text-green-600">Accept</option>
+                          <option value="rejected" className="text-red-600">Reject</option>
+                        </select>
                       </div>
                     </div>
                   </div>
