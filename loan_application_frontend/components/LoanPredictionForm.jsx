@@ -31,7 +31,7 @@ const LoanPredictionForm = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/user/testdata/${id}`);
+        const response = await fetch(`https://loan-prediction-model-eight.vercel.app/user/testdata/${id}`);
         if (response.ok) {
           const user = await response.json();
           setFormData({
