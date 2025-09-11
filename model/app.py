@@ -1,24 +1,37 @@
 from flask import Flask, request, jsonify
 import pickle
 import numpy as np
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 import pandas as pd
+import logging
 
 app = Flask(__name__)
-CORS(app)
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 # Load the trained classifier model
-with open('model/load_model.pkl', 'rb') as f:
-    model = pickle.load(f)
+try:
+    with open('model/load_model.pkl', 'rb') as f:
+        model = pickle.load(f)
+    app.logger.info("Model loaded successfully.")
+except FileNotFoundError:
+    app.logger.error("Model file not found! Ensure 'model/load_model.pkl' is in the correct directory.")
+    model = None # Set model to None so the app can still start
+
+# --- NEW HEALTH CHECK ROUTE ---
+# This route lets us verify that the server is online and responding to requests.
+@app.route('/', methods=['GET'])
+@cross_origin()
+def health_check():
+    app.logger.info("Health check endpoint was hit.")
+    return jsonify({"status": "ok", "message": "Loan Prediction Server is running"}), 200
 
 def calculate_risk_score(data):
-    """
-    Custom formula for risk score calculation based on 13 features.
-    You can adjust the weights based on your domain knowledge.
-    """
+    # This function remains the same
     try:
-        age_factor = (int(data['Age']) - 18) / (100 - 18)  # 0 to 1
-        income_factor = float(data['AnnualIncome']) / 100000  # scale income
+        age_factor = (int(data['Age']) - 18) / (100 - 18)
+        income_factor = float(data['AnnualIncome']) / 100000
         credit_score_factor = (int(data['Creditscore']) - 300) / (850 - 300)
         loan_amount_factor = float(data['LoanAmount']) / 500000
         loan_duration_factor = int(data['LoanDuration']) / 360
@@ -30,42 +43,43 @@ def calculate_risk_score(data):
         networth_factor = float(data['NetWorth']) / 1000000
         interest_rate_factor = float(data['InterestRate']) / 100
 
-        # Weighted sum
         risk_score = (
-            0.15 * (1 - credit_score_factor) +
-            0.10 * utilization_factor +
-            0.10 * bankruptcy_factor +
-            0.10 * default_factor +
-            0.05 * loan_amount_factor +
-            0.05 * loan_duration_factor +
-            0.05 * liabilities_factor +
-            0.05 * interest_rate_factor +
-            0.05 * (1 - income_factor) +
-            0.05 * (1 - networth_factor) +
-            0.05 * (1 - credit_history_factor) +
-            0.05 * (1 - age_factor)
+            0.15 * (1 - credit_score_factor) + 0.10 * utilization_factor +
+            0.10 * bankruptcy_factor + 0.10 * default_factor +
+            0.05 * loan_amount_factor + 0.05 * loan_duration_factor +
+            0.05 * liabilities_factor + 0.05 * interest_rate_factor +
+            0.05 * (1 - income_factor) + 0.05 * (1 - networth_factor) +
+            0.05 * (1 - credit_history_factor) + 0.05 * (1 - age_factor)
         )
-
-        # Scale to 0-100 range
         return max(0, min(risk_score * 100, 100))
     except Exception as e:
-        raise ValueError(f"Error calculating risk score: {str(e)}")
+        raise ValueError(f"Error in risk score calculation: {str(e)}")
 
-@app.route('/predict', methods=['POST'])
+@app.route('/predict', methods=['POST', 'OPTIONS'])
+@cross_origin()
 def predict():
-    data = request.get_json()
-    try:
-        # Step 1: Calculate risk score
-        risk_score = calculate_risk_score(data)
+    app.logger.info("'/predict' endpoint was hit.")
+    if request.method == 'OPTIONS':
+        return jsonify({'status': 'ok'}), 200
+        
+    if model is None:
+        app.logger.error("Model is not loaded, cannot make a prediction.")
+        return jsonify({'error': 'Model is not available on the server'}), 500
 
-        # Step 2: Predict using classifier
+    data = request.get_json()
+    if not data:
+        app.logger.warning("No data received in the request.")
+        return jsonify({'error': 'No data provided'}), 400
+        
+    try:
+        app.logger.info(f"Received data for prediction: {data}")
+        risk_score = calculate_risk_score(data)
         X = pd.DataFrame([[risk_score]], columns=['RiskScore'])
-        prediction = model.predict(X)[0]  # Get class label (0 or 1)
-        proba = model.predict_proba(X)[0][1]  # Probability of class 1 (Approved)
+        prediction = model.predict(X)[0]
+        proba = model.predict_proba(X)[0][1]
         result = 'Approved' if prediction == 1 else 'Rejected'
 
-        print(f"Risk Score: {risk_score}, Prediction: {prediction}, Approval Probability: {proba:.2f}")
-
+        app.logger.info(f"Prediction successful: Risk Score={risk_score}, Result={result}")
         return jsonify({
             'risk_score': round(risk_score, 2),
             'result': result,
@@ -73,8 +87,9 @@ def predict():
         })
 
     except Exception as e:
-        print(f"Error in /predict: {str(e)}")
+        app.logger.error(f"An error occurred during prediction: {str(e)}")
         return jsonify({'error': str(e)}), 400
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
+
