@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useParams } from "react-router-dom";
+
 
 // Sidebar navigation component
 const Sidebar = ({ currentStep, onSectionClick }) => (
@@ -92,6 +94,7 @@ const Prediction = () => {
   const [riskScore, setRiskScore] = useState(null);
   const [showResults, setShowResults] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const { id } = useParams();
 
   // Sidebar navigation state
   const [sidebarStep, setSidebarStep] = useState(0); // 0: Submit, 1: Select Bank, 2: Review
@@ -170,7 +173,7 @@ const handleSubmit = async (e) => {
   }
 
   try {
-    const baseUrl = 'https://loan-prediction-model-eight.vercel.app';
+    const baseUrl = `https://loan-prediction-model-eight.vercel.app/user/testdata/${id}`;
 
     const submissionData = {
   Age: parseInt(formData.Age),
