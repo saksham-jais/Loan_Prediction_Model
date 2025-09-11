@@ -170,7 +170,7 @@ const handleSubmit = async (e) => {
   }
 
   try {
-    const baseUrl = 'http://localhost:3000/user/testdata';
+    const baseUrl = 'https://loan-prediction-model-eight.vercel.app';
 
     const submissionData = {
   Age: parseInt(formData.Age),
