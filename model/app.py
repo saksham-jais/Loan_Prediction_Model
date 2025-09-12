@@ -28,7 +28,6 @@ def health_check():
     return jsonify({"status": "ok", "message": "Loan Prediction Server is running"}), 200
 
 def calculate_risk_score(data):
-    # This function remains the same
     try:
         age_factor = (int(data['Age']) - 18) / (100 - 18)
         income_factor = float(data['AnnualIncome']) / 100000
