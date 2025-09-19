@@ -1,3 +1,4 @@
+// Updated LoanPredictionForm.jsx
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
@@ -24,20 +25,12 @@ const LoanPredictionForm = () => {
 	const [formData, setFormData] = useState(initialState);
 	const [loading, setLoading] = useState(true);
 
-	const [predictionResult, setPredictionResult] = useState(null);
-	const [riskScore, setRiskScore] = useState(null);
-	const [approvalProbability, setApprovalProbability] = useState(null);
-
-	const [showResults, setShowResults] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 
 	useEffect(() => {
 		const fetchUser = async () => {
 			try {
-				// This fetch is for initial data and seems to be working correctly.
-				const response = await fetch(
-					`https://loan-prediction-model-eight.vercel.app/user/testdata/${id}`
-				);
+				const response = await fetch(`https://loan-prediction-model-eight.vercel.app/user/testdata/${id}`);
 				if (response.ok) {
 					const user = await response.json();
 					setFormData({
@@ -93,11 +86,8 @@ const LoanPredictionForm = () => {
 		};
 
 		try {
-			// --- THIS IS THE KEY FIX ---
-			// We must use the full, absolute URL of your deployed backend.
-			const backendUrl = "https://loan-prediction-model-1.onrender.com/predict";
+			const backendUrl = "https://loan-prediction-model-eight.vercel.app/predict";
 			const response = await fetch(backendUrl, {
-				// Using the correct, full URL
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify(submissionData),
@@ -105,11 +95,14 @@ const LoanPredictionForm = () => {
 
 			if (response.ok) {
 				const result = await response.json();
-				setPredictionResult(result.result);
-				setRiskScore(result.risk_score);
-				setApprovalProbability(result.approval_probability);
-				setShowResults(false);
-				setTimeout(() => setShowResults(true), 50);
+				// Navigate to result page with state
+				navigate("/result", {
+					state: {
+						predictionResult: result.result,
+						riskScore: result.risk_score,
+						approvalProbability: result.approval_probability,
+					},
+				});
 			} else {
 				const errorData = await response.json();
 				console.error("Prediction API Error:", errorData.error);
@@ -151,7 +144,6 @@ const LoanPredictionForm = () => {
 					Review the details and click Predict.
 				</p>
 				<form className="w-full" onSubmit={handleSubmit}>
-					{/* Form fields (no changes) */}
 					{[
 						{ name: "Age", placeholder: "Enter your age" },
 						{ name: "AnnualIncome", placeholder: "Enter your annual income" },
@@ -274,30 +266,6 @@ const LoanPredictionForm = () => {
 						<p className="text-gray-600 text-sm">
 							Analyzing loan application...
 						</p>
-					</div>
-				)}
-
-				{!isLoading && predictionResult && (
-					<div
-						className={`mt-6 space-y-3 text-center transition-opacity duration-700 w-full ${
-							showResults ? "opacity-100" : "opacity-0"
-						}`}
-					>
-						<div
-							className={`p-4 rounded-lg font-semibold text-lg ${
-								predictionResult === "Approved"
-									? "bg-green-100 text-green-800"
-									: "bg-red-100 text-red-800"
-							}`}
-						>
-							Loan Status: {predictionResult}
-						</div>
-						<div className="p-4 bg-blue-100 text-blue-800 rounded-lg font-semibold">
-							Calculated Risk Score: {riskScore}
-						</div>
-						<div className="p-4 bg-indigo-100 text-indigo-800 rounded-lg font-semibold">
-							Probability of Approval: {(approvalProbability * 100).toFixed(2)}%
-						</div>
 					</div>
 				)}
 			</div>
