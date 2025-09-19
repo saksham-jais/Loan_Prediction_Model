@@ -246,6 +246,7 @@ const App = () => {
         <Route path="/auth" element={<AuthLogin />} />
         <Route path="/employee-dashboard" element={<EmployeeDashboard />} />
         <Route path="/predict/:id" element={<LoanPredictionForm />} />
+        <Route path="/result" element={<Result />} />
       </Routes>
 
     </>
